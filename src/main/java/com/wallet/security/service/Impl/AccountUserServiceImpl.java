@@ -37,7 +37,7 @@ public class AccountUserServiceImpl implements AccountUserService {
 
     @Override
     public TransactionHistory creditAccountUser(CreditAccountRequest creditAccountRequest) {
-        CreateWalletAccount createOrupdateWalletAcccount = createWalletAccountRepository.findByUserId(creditAccountRequest.getUserId())
+        CreateWalletAccount createOrupdateWalletAcccount = createWalletAccountRepository.findCreateWalletAccountByUserId(creditAccountRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException(
                         String.format("cannot Find account by user Id %s",creditAccountRequest.getUserId() )
                 ));
@@ -57,7 +57,7 @@ public class AccountUserServiceImpl implements AccountUserService {
 
     @Override
     public TransactionHistory debitAccountUser(DebitAccountRequest debitAccountRequest) {
-        CreateWalletAccount createOrupdateWalletAcccount = createWalletAccountRepository.findByUserId(debitAccountRequest.getUserId())
+        CreateWalletAccount createOrupdateWalletAcccount = createWalletAccountRepository.findCreateWalletAccountByUserId(debitAccountRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException(
                         String.format("cannot Find account by user Id %s",debitAccountRequest.getUserId() )
                 ));
@@ -81,7 +81,7 @@ public class AccountUserServiceImpl implements AccountUserService {
 
     @Override
     public List<TransactionHistory> getTransactionHistoryByUserId(String userId) {
-        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findByuserId(userId).get();
+        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTransactionHistoriesByUserId(userId).get();
         return transactionHistories;
     }
 

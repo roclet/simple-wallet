@@ -28,6 +28,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers(
                         "/api/v1/wallet/auth/**",
+                        "/swagger-ui.html",
+                        "/swagger.json",
+                        "/swagger.json",
                         "/v2/api-docs",
                         "/v3/api-docs",
                         "/v3/api-docs/**",
