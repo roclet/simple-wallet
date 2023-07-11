@@ -18,8 +18,7 @@ import java.math.BigDecimal;
 @Data
 public class TransactionHistory {
     @Id
-    @GeneratedValue
-    private Long transactionId;
+    private String transactionId;
     private String userId;
     private String accountNumber;
     private String transactionType;
