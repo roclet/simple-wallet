@@ -43,7 +43,7 @@ public class AccountUserController {
         return ResponseEntity.ok(accountUserService.creditAccountUser(request));
     }
 
-    @PostMapping("/credit/debit")
+    @PostMapping("/debit/account")
     public ResponseEntity<TransactionHistory> debitAccount(
             @RequestBody DebitAccountRequest request
     ) {
