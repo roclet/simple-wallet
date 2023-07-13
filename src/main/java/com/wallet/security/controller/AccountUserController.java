@@ -11,20 +11,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/wallet")
+@CrossOrigin
+@RequestMapping("/api/v1/wallet/auth")
 @RequiredArgsConstructor
 public class AccountUserController {
 
     private final AccountUserService accountUserService;
 
     @PostMapping({"/create/account"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addAccountUser(@RequestBody CreateWalletAccount createWalletAccount){
-        accountUserService.createAccountUser(createWalletAccount);
+    public ResponseEntity<CreateWalletAccount> addAccountUser(@RequestBody CreateWalletAccount createWalletAccount){
+        System.out.println("xxxxxxxxxxxx"+createWalletAccount);
+        final CreateWalletAccount response = accountUserService.createAccountUser(createWalletAccount);
+        return  ResponseEntity.ok().body(response);
     }
+
     @GetMapping({"/transaction/history"})
     public ResponseEntity<List<TransactionHistory>> getTransactionHistoryByUserId(@RequestParam(value = "userId", required = true) final String userId) {
         try {
@@ -49,10 +52,15 @@ public class AccountUserController {
     ) {
         return ResponseEntity.ok(accountUserService.debitAccountUser(request));
     }
-
     @GetMapping({"/get/user"})
     @ResponseStatus(HttpStatus.OK)
-    public List<AccountUserResponse> getAllAccountUser(){
-        return accountUserService.getAllAccountUser();
+    public ResponseEntity<List<AccountUserResponse>> getAllAccountUser(){
+        return ResponseEntity.ok(accountUserService.getAllAccountUser());
+    }
+    @GetMapping({"/get/wallet/account"})
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Optional<CreateWalletAccount>> getWalletAccountUser(@RequestParam(value = "userId", required = true) final String userId){
+        Optional<CreateWalletAccount> response = accountUserService.getWalletAccountByUserId(userId);
+        return ResponseEntity.ok(response);
     }
 }

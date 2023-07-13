@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,7 +25,7 @@ public class AccountUserServiceImpl implements AccountUserService {
     private final TransactionHistoryRepository transactionHistoryRepository;
 
     @Override
-    public void createAccountUser(CreateWalletAccount createWalletAccount) {
+    public CreateWalletAccount createAccountUser(CreateWalletAccount createWalletAccount) {
         createWalletAccountRepository.save(createWalletAccount);
         TransactionHistory transactionHistory = TransactionHistory.builder()
                 .transactionAmount(createWalletAccount.getCurrentBalance())
@@ -32,7 +34,9 @@ public class AccountUserServiceImpl implements AccountUserService {
                 .accountNumber(createWalletAccount.getAccountNumber())
                 .transactionDateTime(createWalletAccount.getModifiedDateTime())
                 .build();
-        transactionHistoryRepository.save(transactionHistory);
+        final TransactionHistory response = transactionHistoryRepository.save(transactionHistory);
+        System.out.println("TransactionHistory"+response);
+        return createWalletAccountRepository.save(createWalletAccount);
     }
 
     @Override
@@ -57,10 +61,12 @@ public class AccountUserServiceImpl implements AccountUserService {
 
     @Override
     public TransactionHistory debitAccountUser(DebitAccountRequest debitAccountRequest) {
+        System.out.println("createOrupdateWalletAcccount"+ debitAccountRequest );
         CreateWalletAccount createOrupdateWalletAcccount = createWalletAccountRepository.findCreateWalletAccountByUserId(debitAccountRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException(
                         String.format("cannot Find account by user Id %s",debitAccountRequest.getUserId() )
                 ));
+
         if(createOrupdateWalletAcccount.getCurrentBalance().compareTo(BigDecimal.ONE ) == 1
          && debitAccountRequest.getAmount().compareTo(BigDecimal.ONE) == 1){
             BigDecimal amount = debitAccountRequest.getAmount();
@@ -81,7 +87,9 @@ public class AccountUserServiceImpl implements AccountUserService {
 
     @Override
     public List<TransactionHistory> getTransactionHistoryByUserId(String userId) {
-        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTransactionHistoriesByUserId(userId).get();
+        //transactionHistoryRepository.findAll().
+        System.out.println("Getting items for the category " + userId);
+        List<TransactionHistory> transactionHistories = transactionHistoryRepository.findTransactionHistoriesByUserId(userId);
         return transactionHistories;
     }
 
@@ -91,7 +99,16 @@ public class AccountUserServiceImpl implements AccountUserService {
             return accountUsers.stream().map(accountUser -> mapToAccountUserRespose(accountUser)).toList();
         }
 
-        private AccountUserResponse mapToAccountUserRespose(AccountUser accountUsers) {
+    @Override
+    public Optional<CreateWalletAccount> getWalletAccountByUserId(String userId) {
+        CreateWalletAccount createOrupdateWalletAcccount = createWalletAccountRepository.findCreateWalletAccountByUserId(userId)
+                .orElseThrow(() -> new RuntimeException(
+                        String.format("cannot Find account by user Id %s",userId )
+                ));
+        return Optional.ofNullable(createOrupdateWalletAcccount);
+    }
+
+    private AccountUserResponse mapToAccountUserRespose(AccountUser accountUsers) {
             return  AccountUserResponse.builder()
                     .firstname(accountUsers.getFirstname())
                     .lastname(accountUsers.getLastname())

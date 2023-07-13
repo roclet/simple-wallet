@@ -1,9 +1,6 @@
 package com.wallet.security.controller;
 
-import com.wallet.security.model.AccountUserRequest;
-import com.wallet.security.model.AccountUserResponse;
-import com.wallet.security.model.AuthenticationRequest;
-import com.wallet.security.model.AuthenticationResponse;
+import com.wallet.security.model.*;
 import com.wallet.security.service.AccountUserService;
 import com.wallet.security.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +20,7 @@ import java.util.List;
 public class AuthenticationController {
 
     private final AuthenticationService service;
+    private final AccountUserService accountUserService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
@@ -30,6 +28,13 @@ public class AuthenticationController {
     ) {
         return ResponseEntity.ok(service.register(request));
     }
+//    @PostMapping({"/create/account"})
+////    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<String> addAccountUser(@RequestBody CreateWalletAccount createWalletAccount){
+//        System.out.println("xxxxxxxxxxxx"+createWalletAccount);
+//        accountUserService.createAccountUser(createWalletAccount);
+//        return ResponseEntity.ok("Thank you");
+//    }
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
